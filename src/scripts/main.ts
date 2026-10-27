@@ -54,7 +54,14 @@ if (reduceMotion) {
   $('#intro')?.remove();
   addEventListener('scroll', () => onScrollHeader(scrollY), { passive: true });
 } else {
-  init();
+  try {
+    init();
+  } catch (err) {
+    // never leave visitors stuck behind the intro overlay
+    console.error(err);
+    $('#intro')?.remove();
+    gsap.set('[data-hero], [data-hero-photo], [data-hero-chip]', { clearProps: 'all' });
+  }
 }
 
 function init() {
@@ -86,7 +93,9 @@ function init() {
 
 /* ---------- intro: paint can → splash → page ---------- */
 // not every page has every hero part, so only tween what exists
-const heroParts = () => ({ text: $$('[data-hero]'), photo: $$('[data-hero-photo]'), chip: $$('[data-hero-chip]') });
+function heroParts() {
+  return { text: $$('[data-hero]'), photo: $$('[data-hero-photo]'), chip: $$('[data-hero-chip]') };
+}
 
 function heroIntroState() {
   const { text, photo, chip } = heroParts();
