@@ -1,0 +1,126 @@
+---
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/dm-sans';
+import '../styles/global.css';
+import { Image } from 'astro:assets';
+import Icon from '../components/Icon.astro';
+import logo from '../assets/logo/logo.png';
+import { company, hours, whatsappLink } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  intro?: boolean;
+}
+const { title, description, intro = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#121e58" />
+    <link rel="icon" type="image/png" href={`${base}favicon.png`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'PaintStore',
+      name: company.name,
+      description,
+      telephone: '+55-75-3641-0762',
+      email: company.email,
+      url: 'https://guanabaratintas.com.br/',
+      sameAs: [company.instagram],
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: company.address.street,
+        addressLocality: 'Valença',
+        addressRegion: 'BA',
+        postalCode: company.address.zip,
+        addressCountry: 'BR',
+      },
+      areaServed: company.cities,
+      openingHoursSpecification: [
+        { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: '18:00' },
+        { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '08:00', closes: '13:00' },
+      ],
+    })} />
+    {intro && (
+      <noscript><style>.intro{display:none!important}</style></noscript>
+    )}
+  </head>
+  <body>
+    {intro && (
+      <div class="intro" id="intro" aria-hidden="true">
+        <button class="intro__skip" type="button">Pular intro</button>
+      </div>
+    )}
+
+    <header class="header" id="header">
+      <a class="header__logo" href={base} aria-label="Guanabara Tintas, página inicial">
+        <Image src={logo} alt="Guanabara Tintas" width={150} loading="eager" />
+      </a>
+      <nav class="header__nav" aria-label="Principal">
+        <a href={`${base}#categorias`}>Categorias</a>
+        <a href={`${base}#marcas`}>Marcas</a>
+        <a href={`${base}#produtos`}>Produtos</a>
+        <a href={`${base}#loja`}>Nossa loja</a>
+        <a href={`${base}#contato`}>Contato</a>
+      </nav>
+      <a class="btn btn--small btn--yellow" href={whatsappLink()} target="_blank" rel="noopener">
+        <Icon name="whatsapp" size={18} /> <span>Orçamento</span>
+      </a>
+    </header>
+
+    <main id="conteudo">
+      <slot />
+    </main>
+
+    <footer class="footer" id="contato">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <Image src={logo} alt="Guanabara Tintas" width={200} />
+          <p>{company.tagline}. Loja de tintas com mais de 20 anos de experiência em Valença - BA.</p>
+          <a class="btn btn--yellow" href={whatsappLink()} target="_blank" rel="noopener">
+            <Icon name="whatsapp" /> Chamar no WhatsApp
+          </a>
+        </div>
+        <div class="footer__col">
+          <h3>Contato</h3>
+          <a href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={18} /> {company.whatsappDisplay}</a>
+          <a href={company.phoneHref}><Icon name="phone" size={18} /> {company.phone}</a>
+          <a href={`mailto:${company.email}`}><Icon name="mail" size={18} /> {company.email}</a>
+          <a href={company.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={18} /> {company.instagramHandle}</a>
+        </div>
+        <div class="footer__col">
+          <h3>Endereço</h3>
+          <a href={company.mapsUrl} target="_blank" rel="noopener">
+            <Icon name="pin" size={18} />
+            <span>{company.address.street}<br />{company.address.district}, {company.address.city}<br />{company.address.zip}</span>
+          </a>
+        </div>
+        <div class="footer__col">
+          <h3>Horário</h3>
+          <ul class="footer__hours">
+            {hours.map((h) => (
+              <li><span>{h.label}</span><span>{h.open ? `${h.open} às ${h.close}` : 'Fechado'}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <p class="footer__legal">© {new Date().getFullYear()} Guanabara Tintas. Todos os direitos reservados.</p>
+    </footer>
+
+    <a class="wa-float" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+      <Icon name="whatsapp" size={30} />
+    </a>
+
+    <script src="../scripts/main.ts"></script>
+  </body>
+</html>

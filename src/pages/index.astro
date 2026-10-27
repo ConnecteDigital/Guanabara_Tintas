@@ -1,19 +1,286 @@
 ---
-import '../styles/global.css';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Drip from '../components/Drip.astro';
+import Icon from '../components/Icon.astro';
+import { brands, categories, company, differentials, hours, perks, products, whatsappLink } from '../data/site';
+
+import fachada from '../assets/loja/fachada-ampla.webp';
+import leque from '../assets/loja/leque-de-cores.webp';
+import guia from '../assets/loja/guia-de-cores.webp';
+import fachadaLogo from '../assets/loja/fachada-logo.webp';
+import balcao from '../assets/loja/balcao.webp';
+import espaco from '../assets/loja/espaco.webp';
+import interna from '../assets/loja/interna.webp';
+import spray from '../assets/loja/spray.webp';
+import texturas from '../assets/loja/texturas.webp';
+import prateleira1 from '../assets/loja/prateleira-1.webp';
+import prateleira2 from '../assets/loja/prateleira-2.webp';
+
+const base = import.meta.env.BASE_URL;
+const perkIcons = ['card', 'truck', 'store', 'pix'] as const;
+const palette = [
+  { name: 'Amarelo Guanabara', hex: '#f6c512', ink: '#121e58' },
+  { name: 'Laranja Entardecer', hex: '#ff7e19', ink: '#121e58' },
+  { name: 'Rosa Vibrante', hex: '#ec008c', ink: '#fffdf9' },
+  { name: 'Azul Valença', hex: '#1743a1', ink: '#fffdf9' },
+  { name: 'Verde Mata', hex: '#2f8f5b', ink: '#fffdf9' },
+  { name: 'Terracota', hex: '#c8542f', ink: '#fffdf9' },
+];
+const gallery = [
+  [espaco, interna, prateleira1],
+  [texturas, spray, leque],
+  [prateleira2, guia, balcao],
+];
+const galleryAlt = new Map([
+  [espaco, 'Espaço de atendimento com parede de listras coloridas'],
+  [interna, 'Corredor interno da loja com prateleiras de tintas'],
+  [prateleira1, 'Prateleira com latas de tinta'],
+  [texturas, 'Mostruário de texturas Textura & Cia'],
+  [spray, 'Expositor de tintas spray'],
+  [leque, 'Leque de cores sobre a mesa de atendimento'],
+  [prateleira2, 'Prateleira com latas Sherwin-Williams'],
+  [guia, 'Guia de cores da máquina de tintas'],
+  [balcao, 'Balcão de atendimento da loja'],
+]);
+const description =
+  'Guanabara Tintas em Valença - BA: revenda Master Sherwin-Williams e Suvinil. Tintas imobiliárias, automotivas, industriais, navais, vernizes, texturas e sua cor feita na hora. Atendemos Valença, Morro de São Paulo, Barra Grande, Santo Antônio de Jesus e Guaibim.';
 ---
-<html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Guanabara Tintas</title>
-    <meta name="description" content="Guanabara Tintas: loja de tintas." />
-  </head>
-  <body>
-    <main>
-      <section class="section"><h2>Guanabara Tintas</h2></section>
-      <section class="section"><h2>Cores que transformam</h2></section>
-      <section class="section"><h2>Visite nossa loja</h2></section>
-    </main>
-    <script src="../scripts/main.ts"></script>
-  </body>
-</html>
+
+<Base title="Guanabara Tintas | Revenda Master Sherwin-Williams e Suvinil em Valença - BA" description={description} intro>
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow" data-hero><span class="dot"></span>{company.years} anos de experiência · Valença - BA</p>
+        <h1 class="hero__title" data-hero>
+          Sua casa <span class="paint-word">mais bonita<svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 60 6, 120 20, 180 10 S 270 8, 296 14" /></svg></span> começa aqui.
+        </h1>
+        <p class="hero__lead" data-hero>As melhores marcas, as cores que você precisa e o atendimento que Valença já conhece.</p>
+        <div class="hero__actions" data-hero>
+          <a class="btn btn--navy" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" /> Fazer orçamento</a>
+          <a class="btn btn--ghost" href="#categorias">Ver categorias <Icon name="arrow" size={18} /></a>
+        </div>
+        <p class="hero__badge" data-hero>{company.tagline}</p>
+      </div>
+      <div class="hero__media">
+        <div class="hero__blob" aria-hidden="true"></div>
+        <figure class="hero__photo" data-hero-photo>
+          <Image src={fachada} alt="Fachada da loja Guanabara Tintas em Valença" widths={[480, 668]} sizes="(max-width: 900px) 90vw, 560px" loading="eager" fetchpriority="high" />
+        </figure>
+        <figure class="hero__chip" data-hero-chip>
+          <Image src={leque} alt="Leque de cores" width={260} loading="eager" />
+        </figure>
+        <ul class="hero__swatches" aria-hidden="true">
+          <li style="--c:#f6c512"></li><li style="--c:#ff7e19"></li><li style="--c:#ec008c"></li><li style="--c:#1743a1"></li>
+        </ul>
+      </div>
+    </div>
+    <Drip color="var(--cream)" seed={3} />
+  </section>
+
+  <!-- PERKS -->
+  <section class="perks" aria-label="Condições">
+    <ul class="perks__list">
+      {perks.map((p, i) => (
+        <li class="perk" data-reveal>
+          <span class="perk__icon"><Icon name={perkIcons[i]} size={26} /></span>
+          <span><strong>{p.title}</strong><small>{p.note}</small></span>
+        </li>
+      ))}
+    </ul>
+    <Drip color="var(--navy)" seed={7} />
+  </section>
+
+  <!-- MARCAS -->
+  <section class="brands" id="marcas">
+    <div class="section-head" data-reveal>
+      <p class="kicker">Marcas que confiamos</p>
+      <h2>As melhores marcas com os <em>menores preços</em>, você encontra aqui.</h2>
+    </div>
+    {[0, 1].map((row) => (
+      <div class={`marquee ${row ? 'marquee--reverse' : ''}`} data-marquee={row ? -1 : 1}>
+        <div class="marquee__track">
+          {[0, 1].map((copy) => (
+            <ul class="marquee__group" aria-hidden={copy ? 'true' : undefined}>
+              {(row ? [...brands].reverse() : brands).map((b) => (
+                <li class="brand-pill">
+                  {b.logo ? <Image src={b.logo} alt={copy ? '' : b.name} width={220} /> : <span class="brand-pill__word">{b.name}</span>}
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+    ))}
+    <Drip color="var(--cream)" seed={11} />
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="categories" id="categorias">
+    <div class="section-head section-head--light" data-reveal>
+      <p class="kicker">Categorias de tintas</p>
+      <h2>A tinta certa para cada superfície.</h2>
+      <p>Escolha onde você vai pintar e veja as soluções que temos para o seu projeto.</p>
+    </div>
+    <div class="cat-grid">
+      {categories.map((c, i) => (
+        <a class="cat-card" href={`${base}categorias/${c.slug}/`} style={`--cat:${c.color};--cat-ink:${c.ink}`} data-cat>
+          <span class="cat-card__num">{String(i + 1).padStart(2, '0')}</span>
+          <div class="cat-card__img">
+            <Image src={c.image} alt="" width={420} />
+          </div>
+          <div class="cat-card__body">
+            <h3>{c.name}</h3>
+            <p>{c.short}</p>
+            <span class="cat-card__go">Ver produtos <Icon name="arrow" size={18} /></span>
+          </div>
+        </a>
+      ))}
+    </div>
+    <Drip color="var(--navy-deep)" seed={5} />
+  </section>
+
+  <!-- MÁQUINA DE CORES (pinned) -->
+  <section class="colors" id="cores" style={`--paint:${palette[0].hex};--paint-ink:${palette[0].ink}`}>
+    <div class="colors__pin">
+      <div class="colors__copy">
+        <p class="kicker">Máquina de cores</p>
+        <h2>Fazemos sua cor favorita em até <span class="colors__big">5 minutos</span>.</h2>
+        <p>Tintas personalizadas com máquina de cores: você escolhe o tom, a gente prepara na hora, na quantidade certa para o seu projeto.</p>
+        <a class="btn btn--navy" href={whatsappLink('Olá, venho do Site! Quero fazer uma cor personalizada na máquina de cores.')} target="_blank" rel="noopener">
+          <Icon name="whatsapp" /> Quero minha cor
+        </a>
+      </div>
+      <div class="colors__stage">
+        <div class="colors__swatch" aria-hidden="true">
+          {palette.map((p, i) => <span class="colors__layer" style={`--c:${p.hex}`} data-layer={i}></span>)}
+        </div>
+        <div class="colors__label" aria-live="polite">
+          <span class="colors__name">{palette[0].name}</span>
+          <span class="colors__hex">{palette[0].hex.toUpperCase()}</span>
+        </div>
+        <ol class="colors__dots" aria-hidden="true">
+          {palette.map((p) => <li style={`--c:${p.hex}`}></li>)}
+        </ol>
+      </div>
+    </div>
+    <script type="application/json" id="palette" set:html={JSON.stringify(palette)} />
+    <Drip color="var(--paint)" seed={13} />
+  </section>
+
+  <!-- PRODUTOS (horizontal) -->
+  <section class="products" id="produtos">
+    <div class="products__pin">
+      <div class="section-head" data-reveal>
+        <p class="kicker">Encontre o produto ideal</p>
+        <h2>Conheça alguns dos nossos produtos.</h2>
+        <p>Chame a gente para consultar cores, tamanhos e condições.</p>
+      </div>
+      <div class="products__rail">
+        {products.map((p) => (
+          <article class="product">
+            <div class="product__img"><Image src={p.image} alt={`${p.name} ${p.brand}`} width={360} /></div>
+            <p class="product__brand">{p.brand}</p>
+            <h3>{p.name}</h3>
+            <p>{p.text}</p>
+            <a class="product__cta" href={whatsappLink(`Olá, venho do Site! Gostaria de consultar o produto ${p.name} (${p.brand}).`)} target="_blank" rel="noopener">
+              Consultar produto <Icon name="arrow" size={16} />
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+    <Drip color="var(--cream)" seed={17} />
+  </section>
+
+  <!-- DIFERENCIAIS -->
+  <section class="diffs" aria-label="Diferenciais">
+    <div class="section-head" data-reveal>
+      <p class="kicker">Por que a Guanabara</p>
+      <h2>Escolha com confiança.</h2>
+    </div>
+    <ul class="diffs__list">
+      {differentials.map((d) => (
+        <li class="diff" data-reveal>
+          <strong>{d.value}</strong>
+          <h3>{d.title}</h3>
+          <p>{d.text}</p>
+        </li>
+      ))}
+    </ul>
+    <Drip color="var(--yellow)" seed={19} />
+  </section>
+
+  <!-- SOBRE / LOJA -->
+  <section class="store" id="loja">
+    <div class="store__inner">
+      <div class="store__photos">
+        <figure class="store__photo store__photo--main" data-clip>
+          <Image src={fachadaLogo} alt="Fachada com o logo da Guanabara Tintas" width={390} />
+        </figure>
+        <figure class="store__photo store__photo--side" data-clip>
+          <Image src={balcao} alt="Balcão de atendimento da loja" width={390} />
+        </figure>
+      </div>
+      <div class="store__copy">
+        <p class="kicker">Sobre nós</p>
+        <h2 data-reveal>Estamos aqui esperando a sua visita.</h2>
+        <p data-reveal>
+          Há mais de 20 anos ajudando Valença e região a transformar casas, carros, barcos e empresas. Na nossa loja física você encontra variedade,
+          atendimento técnico especializado e apoio para decidir a cor, o acabamento e a quantidade ideais para o seu projeto.
+        </p>
+        <div class="store__info" data-reveal>
+          <a class="store__addr" href={company.mapsUrl} target="_blank" rel="noopener">
+            <Icon name="pin" />
+            <span><strong>{company.address.street}</strong><br />{company.address.district}, {company.address.city} · {company.address.zip}</span>
+          </a>
+          <p class="store__status" id="store-status" hidden><span class="store__dot"></span><span class="store__status-text"></span></p>
+        </div>
+        <table class="hours" data-reveal>
+          <caption>Horário de funcionamento</caption>
+          <tbody>
+            {hours.map((h) => (
+              <tr data-day={h.day}><th scope="row">{h.label}</th><td>{h.open ? `${h.open} às ${h.close}` : 'Fechado'}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <div class="store__actions" data-reveal>
+          <a class="btn btn--yellow" href={company.mapsUrl} target="_blank" rel="noopener"><Icon name="pin" /> Ver no mapa</a>
+          <a class="btn btn--ghost-light" href={company.phoneHref}><Icon name="phone" /> {company.phone}</a>
+        </div>
+        <div class="store__cities" data-reveal>
+          <p>Cidades de atuação</p>
+          <ul>{company.cities.map((c) => <li>{c}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+    <Drip color="var(--navy)" seed={23} />
+  </section>
+
+  <!-- GALERIA -->
+  <section class="gallery" aria-labelledby="gallery-title">
+    <div class="section-head" data-reveal>
+      <p class="kicker">Por dentro da Guanabara</p>
+      <h2 id="gallery-title">Variedade para encontrar exatamente o que você precisa.</h2>
+    </div>
+    <div class="gallery__cols">
+      {gallery.map((col, i) => (
+        <div class="gallery__col" data-speed={[-60, 60, -30][i]}>
+          {col.map((img) => (
+            <figure><Image src={img} alt={galleryAlt.get(img) ?? ''} width={390} /></figure>
+          ))}
+        </div>
+      ))}
+    </div>
+    <Drip color="var(--cream)" seed={29} />
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2 data-reveal>Vamos começar? <span>Fale com a Guanabara Tintas.</span></h2>
+    <p data-reveal>Envie uma mensagem e conte o que você precisa. A gente ajuda a encontrar a melhor solução.</p>
+    <a class="btn btn--navy btn--big" href={whatsappLink()} target="_blank" rel="noopener" data-reveal><Icon name="whatsapp" size={26} /> Chamar no WhatsApp</a>
+    <Drip color="var(--yellow)" seed={31} />
+  </section>
+</Base>

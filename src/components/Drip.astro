@@ -1,0 +1,36 @@
+---
+// Paint dripping from the bottom of a section into the next one.
+// Deterministic (seeded) so the shape is identical on every build.
+interface Props {
+  color: string;
+  seed?: number;
+}
+const { color, seed = 1 } = Astro.props;
+
+let s = seed * 9301 + 49297;
+const rand = () => {
+  s = (s * 9301 + 49297) % 233280;
+  return s / 233280;
+};
+
+const W = 1440;
+const BASE = 26;
+const drips: string[] = [];
+const drops: { cx: number; cy: number; r: number }[] = [];
+let x = 10 + rand() * 40;
+while (x < W - 30) {
+  const w = 14 + rand() * 30;
+  const len = 18 + rand() * rand() * 110;
+  const r = w / 2;
+  drips.push(`M${x},${BASE - 4} v${len} a${r},${r} 0 0 0 ${w},0 v${-len} z`);
+  if (rand() > 0.7) drops.push({ cx: x + r, cy: BASE + len + r + 10 + rand() * 18, r: 3 + rand() * 4 });
+  x += w + 30 + rand() * 120;
+}
+const H = 170;
+---
+
+<svg class="drip" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true" style={`--drip:${color}`}>
+  <rect x="0" y="-2" width={W} height={BASE + 2}></rect>
+  {drips.map((d) => <path d={d} />)}
+  {drops.map((d) => <circle class="drip__drop" cx={d.cx} cy={d.cy} r={d.r} />)}
+</svg>

@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Drip from '../../components/Drip.astro';
+import Icon from '../../components/Icon.astro';
+import { brands, categories, whatsappLink, type Category } from '../../data/site';
+
+export function getStaticPaths() {
+  return categories.map((category) => ({ params: { slug: category.slug }, props: { category } }));
+}
+
+const { category } = Astro.props as { category: Category };
+const base = import.meta.env.BASE_URL;
+const catBrands = category.brands.map((name) => brands.find((b) => b.name === name) ?? { name });
+const others = categories.filter((c) => c.slug !== category.slug);
+const ask = (item: string) => whatsappLink(`Olá, venho do Site! Gostaria de um orçamento de ${item} (${category.name}).`);
+---
+
+<Base
+  title={`Tintas para ${category.name} | Guanabara Tintas, Valença - BA`}
+  description={`${category.description} Guanabara Tintas, Valença - BA.`}
+>
+  <section class="cat-hero" style={`--cat:${category.color};--cat-ink:${category.ink}`}>
+    <div class="cat-hero__inner">
+      <div class="cat-hero__copy">
+        <a class="cat-hero__back" href={`${base}#categorias`}>← Todas as categorias</a>
+        <p class="kicker" data-hero>Categoria</p>
+        <h1 data-hero>{category.name}</h1>
+        <p class="cat-hero__lead" data-hero>{category.description}</p>
+        <a class="btn btn--navy" href={ask(`tintas para ${category.name.toLowerCase()}`)} target="_blank" rel="noopener" data-hero>
+          <Icon name="whatsapp" /> Pedir orçamento
+        </a>
+      </div>
+      <figure class="cat-hero__img" data-hero-photo>
+        <Image src={category.image} alt="" width={520} loading="eager" />
+      </figure>
+    </div>
+    <Drip color="var(--cat)" seed={category.slug.length * 7} />
+  </section>
+
+  <section class="cat-products">
+    <div class="section-head" data-reveal>
+      <p class="kicker">O que você encontra</p>
+      <h2>Produtos para {category.name.toLowerCase()}</h2>
+    </div>
+    <ul class="cat-list">
+      {category.products.map((item, i) => (
+        <li class="cat-item" data-reveal style={`--cat:${category.color}`}>
+          <span class="cat-item__num">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{item}</h3>
+          <a href={ask(item)} target="_blank" rel="noopener">Consultar <Icon name="arrow" size={16} /></a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="cat-brands" data-reveal>
+      <p class="kicker">Marcas</p>
+      <ul>
+        {catBrands.map((b) => (
+          <li class="brand-pill">
+            {'logo' in b && b.logo ? <Image src={b.logo} alt={b.name} width={200} /> : <span class="brand-pill__word">{b.name}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <Drip color="var(--cream)" seed={41} />
+  </section>
+
+  <section class="cat-others">
+    <div class="section-head section-head--light" data-reveal>
+      <p class="kicker">Outras categorias</p>
+      <h2>Continue explorando.</h2>
+    </div>
+    <div class="cat-grid cat-grid--small">
+      {others.map((c) => (
+        <a class="cat-card" href={`${base}categorias/${c.slug}/`} style={`--cat:${c.color};--cat-ink:${c.ink}`} data-cat>
+          <div class="cat-card__body">
+            <h3>{c.name}</h3>
+            <p>{c.short}</p>
+            <span class="cat-card__go">Ver produtos <Icon name="arrow" size={18} /></span>
+          </div>
+        </a>
+      ))}
+    </div>
+    <Drip color="var(--navy-deep)" seed={43} />
+  </section>
+</Base>
