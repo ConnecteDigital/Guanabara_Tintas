@@ -1,0 +1,8 @@
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+* { box-sizing: border-box; margin: 0; }
+body { font-family: system-ui, sans-serif; background: #f4efe6; color: #1b1b1b; }
+
+.section { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.section h2 { font-size: clamp(2rem, 6vw, 5rem); }
